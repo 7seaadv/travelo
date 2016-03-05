@@ -13,6 +13,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 import models.travelo.AuthUser;
 import models.travelo.User;
+import play.Play;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -21,12 +22,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class GoogleAuthController extends Controller {
 
-	private static final String GOOGLE_APP_ID = "945849972051-ul64fkol829qiieesrpu1dedddftd6r8.apps.googleusercontent.com";
-	private static final String GOOGLE_APP_SECRET = "PdObPKxehYQVoPY7ke2m2Ea-";
-	private static final String GOOGLE_SCOPE = "profile";
-	private static final String GOOGLE_REDIRECT_URI = "http://localhost:9000/authCallbackGoogle";
-	private static final String GOOGLE_DIALOG_OAUTH = "https://accounts.google.com/o/oauth2/auth";
-	private static final String GOOGLE_ACCESS_TOKEN = "https://accounts.google.com/o/oauth2/token";
+	private static final String GOOGLE_APP_ID = Play.application().configuration().getString("GOOGLE_APP_ID");
+	private static final String GOOGLE_APP_SECRET = Play.application().configuration().getString("GOOGLE_APP_SECRET");
+	private static final String GOOGLE_SCOPE = Play.application().configuration().getString("GOOGLE_SCOPE");
+	private static final String GOOGLE_REDIRECT_URI = Play.application().configuration().getString("GOOGLE_REDIRECT_URI");
+	private static final String GOOGLE_DIALOG_OAUTH = Play.application().configuration().getString("GOOGLE_DIALOG_OAUTH");
+	private static final String GOOGLE_ACCESS_TOKEN = Play.application().configuration().getString("GOOGLE_ACCESS_TOKEN");
 
 	public static Result authenticateGoogle(){
 		String url = GOOGLE_DIALOG_OAUTH+"?client_id="+GOOGLE_APP_ID+"&approval_prompt=force&response_type=code&redirect_uri="+GOOGLE_REDIRECT_URI+"&scope="+GOOGLE_SCOPE;

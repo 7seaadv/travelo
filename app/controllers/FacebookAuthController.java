@@ -13,17 +13,18 @@ import models.travelo.User;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import play.Play;
 import play.mvc.Controller;
 import play.mvc.Result;
 
 public class FacebookAuthController extends Controller {
 
-	private static final String FB_APP_ID = "563932217111118";
-	private static final String FB_APP_SECRET = "138657ad3837621579229122d86f0bf9";
-	private static final String FB_SCOPE = "public_profile";
-	private static final String FB_REDIRECT_URI = "http://localhost:9000/authCallbackFB";
-	private static final String FB_DIALOG_OAUTH = "https://www.facebook.com/dialog/oauth";
-	private static final String FB_ACCESS_TOKEN = "https://graph.facebook.com/oauth/access_token";
+	private static final String FB_APP_ID = Play.application().configuration().getString("FB_APP_ID");
+	private static final String FB_APP_SECRET = Play.application().configuration().getString("FB_APP_SECRET");
+	private static final String FB_SCOPE = Play.application().configuration().getString("FB_SCOPE");
+	private static final String FB_REDIRECT_URI = Play.application().configuration().getString("FB_REDIRECT_URI");
+	private static final String FB_DIALOG_OAUTH = Play.application().configuration().getString("FB_DIALOG_OAUTH");
+	private static final String FB_ACCESS_TOKEN = Play.application().configuration().getString("FB_ACCESS_TOKEN");
 	
 	public static Result authenticateFB(){
 		String url = FB_DIALOG_OAUTH+"?client_id="+FB_APP_ID+"&redirect_uri="+FB_REDIRECT_URI+"&scope="+FB_SCOPE;
