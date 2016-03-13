@@ -1,0 +1,34 @@
+<div class="main-content" ng-init="getUserProfile()">
+	<div class="row editBtn">
+		<a ui-sref="editprofile" class="btn btn-primary pull-right">Edit Profile</a>
+	</div>
+	<div class="row block">
+		<div class="col-lg-4 col-md-4 col-sm-12 inner-block">
+			<div class="usr-img">
+				<img ng-src={{profilePhoto}} class="img-responsive">
+			</div>
+			<div class="usr-info">
+				<p ng-bind="user.firstName + ' ' + user.lastName"></p>
+				<p ng-bind="user.gender"></p>
+				<p ng-bind="user.dateOfBirth"></p>
+			</div>
+		</div>
+		<div class="col-lg-4 col-md-4 col-sm-12 inner-block">
+			<div class="usr-info">
+				<p class="info-heading">Something about yourself:</p>
+				<p class="info-content" ng-bind="user.aboutMe"></p>
+			</div>
+		</div>
+		<div class="col-lg-4 col-md-4 col-sm-12 inner-block">
+			<div class="usr-info">
+				<p class="info-heading">Places you have been to:</p>
+				<p class="info-content">
+					<div ng-repeat="p in user.placesBeenTos">
+						<span ng-bind="p.name"></span>
+					</div>
+				</p>
+			</div>
+		</div>
+	</div>
+	
+</div>

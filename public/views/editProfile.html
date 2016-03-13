@@ -1,0 +1,87 @@
+<div class="main-content" ng-init="getUserProfile()">
+	<div class="row editBtn">
+		<a class="btn btn-primary pull-right" ng-click="updateUserProfile()">Save</a>
+	</div>
+	<div class="row block">
+		<div class="col-lg-4 col-md-4 col-sm-12 inner-block">
+			<div class="usr-img">
+				<img ng-src={{profilePhoto}} class="img-responsive">
+			</div>
+			<div class="file-upload-btn">
+				<input type="file" accept="image/*" data-ng-file-select="onFileSelect($files)">
+			</div>	
+			<div class="usr-info edit-usr-info">
+				<form class="form-horizontal">
+					<div class="form-group">
+						<label class="control-label col-md-5">First Name</label>
+						<div class="col-md-7">
+							<input type="text" class="form-control" ng-model="user.firstName">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-5">Last Name</label>
+						<div class="col-md-7">
+							<input type="text" class="form-control" ng-model="user.lastName">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-5">Gender</label>
+						<div class="col-md-7 radio">
+							<label class="radio-inline myRadio"><input type="radio" name="gender" ng-model="user.gender" value="Male">Male</label>
+							<label class="radio-inline myRadio"><input type="radio" name="gender" ng-model="user.gender" value="Female">Female</label>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-5">Date of Birth</label>
+						<div class="col-md-7">
+							<div class="input-group date">
+			                	<input type="text" class="form-control" ng-model="user.dateOfBirth"
+			                	data-provide="datepicker" data-date-format="yyyy-mm-dd">
+			                	<span class="input-group-addon"><i class="fa fa-calendar fa-black"></i></span>
+			                </div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<hr style="width:100%;" class="hidden-lg hidden-md">
+		<div class="col-lg-4 col-md-4 col-sm-12 inner-block">
+			<div class="usr-info edit-usr-info">
+				<p class="info-heading">Something about yourself:</p>
+				<form class="form-horizontal">
+					<div class="form-group">
+						<div class="col-md-12">
+							<textarea class="form-control" style="resize:none;" rows="5" ng-model="user.aboutMe"></textarea>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<hr style="width:100%;" class="hidden-lg hidden-md">
+		<div class="col-lg-4 col-md-4 col-sm-12 inner-block">
+			<div class="usr-info edit-usr-info">
+				<p class="info-heading">Places you have been to:</p>
+				<form class="form-horizontal">
+					<div class="form-group">
+						<div class="col-md-12">
+							<div class="custom-dropdown">
+								<input placeholder="Search..." type="text" class="form-control serach-box" ng-focus="showDropdown = true" ng-blur="closeDropdown()" ng-model="searchText" ng-change="getGooglePlaces()">
+								<div class="options" ng-show="places.length > 0 && showDropdown">
+									<div ng-repeat="p in places" class="option-row" ng-click="getPlaceDetails(p)">
+										<span ng-bind="p.description"></span>
+									</div>
+								</div>
+							</div>
+							<div>
+								<div ng-repeat="place in user.placesBeenTos">
+									<span ng-bind="place.name"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	
+</div>

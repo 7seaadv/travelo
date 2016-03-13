@@ -15,5 +15,14 @@ GET		/logout						controllers.AuthController.logout()
 # Home page
 GET     /                           controllers.Application.landing()
 
+GET		/getGooglePlaces/:input			controllers.ServiceController.getGooglePlaces(input:String)
+GET		/getPlaceDetails/:id			controllers.ServiceController.getPlaceDetails(id:String)
+
+POST	/uploadPhoto				controllers.Application.uploadPhoto()
+GET		/getPhotoById/:id/:group	controllers.Application.getPhotoById(id:Long,group:String)
+
+GET		/getUserProfile				controllers.Application.getUserProfile()
+POST	/updateUserProfile			controllers.Application.updateUserProfile()
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
