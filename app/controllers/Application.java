@@ -1,5 +1,6 @@
 package controllers;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
@@ -14,8 +15,6 @@ import models.travelo.User;
 import play.libs.Json;
 import play.modules.mongodb.jackson.MongoDB;
 import play.mvc.Controller;
-import play.mvc.Http.MultipartFormData;
-import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
 import play.mvc.Security;
 import service.Secured;
@@ -53,31 +52,29 @@ public class Application extends Controller {
 	
 	public static Result uploadPhoto(){
 		DB db = MongoDB.getCollection(User.class.getSimpleName(), User.class, Long.class).getDB();
-        MultipartFormData body = request().body().asMultipartFormData();
+        File file = request().body().asRaw().asFile();
         Photo p = new Photo();
-        if (body != null) {
-            FilePart filePart = body.getFile("image");
-            if (filePart != null) {
-                GridFS gridFS = new GridFS(db, "ProfilePhoto");
-                GridFSInputFile gfsFile = null;
-                try {
-                    gfsFile = gridFS.createFile(filePart.getFile());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                gfsFile.setFilename(filePart.getFilename());
-                gfsFile.setContentType("image/jpg");
-                gfsFile.save();
-                p.gridFileId = gfsFile.getId().toString();
-                p.save();
+        if (file != null) {
+        	String fileName = request().getHeader("File-name");
+            GridFS gridFS = new GridFS(db, "ProfilePhoto");
+            GridFSInputFile gfsFile = null;
+            try {
+                gfsFile = gridFS.createFile(file);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+            gfsFile.setFilename(fileName);
+            gfsFile.setContentType("image/jpg");
+            gfsFile.save();
+            p.gridFileId = gfsFile.getId().toString();
+            p.save();
         }
         Map<String, Object> map = new HashMap<>();
         map.put("id",p.id);
         return ok(Json.toJson(map));
 	}
 	
-	public static Result getUserProfile(){
+	public static Result getCurrentUserProfile(){
 		AuthUser u = AuthUser.findBySessionUuid(request().cookie("sessionUuid").value());
 		if(u == null){
 			return ok(login.render());
@@ -105,7 +102,7 @@ public class Application extends Controller {
 		return ok(Json.toJson(vm));
 	}
 	
-	public static Result updateUserProfile(){
+	public static Result updateCurrentUserProfile(){
 		AuthUser u = AuthUser.findBySessionUuid(request().cookie("sessionUuid").value());
 		if(u == null){
 			return ok(login.render());
@@ -116,14 +113,12 @@ public class Application extends Controller {
 		}
 		try {
 			JsonNode json = request().body().asJson();
-			JsonNode data = json.path("user");
-			user.firstName = data.path("firstName").asText();
-			user.lastName = data.path("lastName").asText();
-			user.gender = data.path("gender").asText();
-			user.aboutMe = data.path("aboutMe").asText();
-			user.dateOfBirth = df.parse(data.path("dateOfBirth").asText());
-			user.profilePhotoId = data.path("profilePhotoId").asLong();
-			ArrayNode places = (ArrayNode) data.path("placesBeenTos");
+			user.firstName = json.path("firstName").asText();
+			user.lastName = json.path("lastName").asText();
+			user.gender = json.path("gender").asText();
+			user.aboutMe = json.path("aboutMe").asText();
+			user.dateOfBirth = df.parse(json.path("dateOfBirth").asText());
+			ArrayNode places = (ArrayNode) json.path("placesBeenTos");
 			for(int i=0;i<places.size();i++){
 				JsonNode loc = places.get(i);
 				if(loc.path("id").asLong() == 0){
@@ -137,10 +132,21 @@ public class Application extends Controller {
 					user.placesBeenToIds.add(l.id);
 				}
 			}
+			Long photoId = json.path("profilePhotoId").asLong();
+			if(photoId != 0){
+				if(photoId != user.profilePhotoId){
+					if(user.profilePhotoId != null){
+						Photo p = Photo.findById(user.profilePhotoId);
+						p.linked = false;
+						p.update();
+					}
+					Photo p = Photo.findById(photoId);
+					p.linked = true;
+					p.update();
+					user.profilePhotoId = photoId;
+				} 
+			}
 			user.update();
-			Photo p = Photo.findById(user.profilePhotoId);
-			p.linked = true;
-			p.update();
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}

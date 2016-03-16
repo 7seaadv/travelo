@@ -13,16 +13,16 @@ GET		/authCallbackGoogle			controllers.GoogleAuthController.authCallbackGoogle()
 GET		/logout						controllers.AuthController.logout()
 
 # Home page
-GET     /                           controllers.Application.landing()
+GET     /                           		controllers.Application.landing()
 
-GET		/getGooglePlaces/:input			controllers.ServiceController.getGooglePlaces(input:String)
-GET		/getPlaceDetails/:id			controllers.ServiceController.getPlaceDetails(id:String)
+GET		/getGooglePlaces/:input				controllers.ServiceController.getGooglePlaces(input:String)
+GET		/getGooglePlaceDetails/:id			controllers.ServiceController.getGooglePlaceDetails(id:String)
 
-POST	/uploadPhoto				controllers.Application.uploadPhoto()
-GET		/getPhotoById/:id/:group	controllers.Application.getPhotoById(id:Long,group:String)
+POST	/uploadPhoto						controllers.Application.uploadPhoto()
+GET		/getPhotoById/:id/:group			controllers.Application.getPhotoById(id:Long,group:String)
 
-GET		/getUserProfile				controllers.Application.getUserProfile()
-POST	/updateUserProfile			controllers.Application.updateUserProfile()
+GET		/getCurrentUserProfile				controllers.Application.getCurrentUserProfile()
+POST	/updateCurrentUserProfile			controllers.Application.updateCurrentUserProfile()
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET     /assets/*file               		controllers.Assets.at(path="/public", file)

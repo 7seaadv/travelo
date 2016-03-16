@@ -3,10 +3,10 @@ app.controller('ApplicationController', function(){
 	
 });
 
-app.controller('ProfileController', function($scope, $http, $timeout){
+app.controller('ProfileController', function($scope, UserServiceFactory){
 	
 	$scope.getUserProfile = function(){
-		$http.get('/getUserProfile',{}).then(function(res){
+		UserServiceFactory.getService().getCurrentUserProfile().then(function(res){
 			$scope.user = res.data;
 			if($scope.user.dateOfBirth != null){
 				$scope.user.dateOfBirth = moment($scope.user.dateOfBirth).format("YYYY-MM-DD");
@@ -23,10 +23,10 @@ app.controller('ProfileController', function($scope, $http, $timeout){
 	
 });	
 	
-app.controller('EditProfileController', function($scope, $http, $timeout, $upload){
+app.controller('EditProfileController', function($scope, $timeout, $upload, UserServiceFactory, UtilServiceFactory, ImageUploadServiceFactory){
 	
 	$scope.getUserProfile = function(){
-		$http.get('/getUserProfile',{}).then(function(res){
+		UserServiceFactory.getService().getCurrentUserProfile().then(function(res){
 			$scope.user = res.data;
 			if($scope.user.dateOfBirth != null){
 				$scope.user.dateOfBirth = moment($scope.user.dateOfBirth).format("YYYY-MM-DD");
@@ -39,24 +39,20 @@ app.controller('EditProfileController', function($scope, $http, $timeout, $uploa
 		}, function(error){
 			console.log(error.data);
 		});
-	}
+	}	
 	
 	$scope.places = [];
 	$scope.showDropdown = true;
 	$scope.getGooglePlaces = function(){
-		if($scope.searchText && $scope.searchText != ""){
-			$http.get('/getGooglePlaces/'+$scope.searchText,{}).then(function(res){
-				$scope.places = res.data.predictions;
-			}, function(error){
-				console.log(error.data);
-			});
-		} else {
-			$scope.places = [];
-		}
+		UtilServiceFactory.getService().getGooglePlaces($scope.searchText).then(function(res){
+			$scope.places = res.data.predictions;
+		}, function(error){
+			console.log(error.data);
+		});
 	}
 	
 	$scope.getPlaceDetails = function(p){
-		$http.get('/getPlaceDetails/'+p.place_id,{}).then(function(res){
+		UtilServiceFactory.getService().getGooglePlaceDetails(p.place_id).then(function(res){
 			$scope.place = {
 					name: res.data.result.name,
 					description: res.data.result.formatted_address,
@@ -95,28 +91,17 @@ app.controller('EditProfileController', function($scope, $http, $timeout, $uploa
 	}
 	
 	$scope.updateUserProfile = function(){
-		if(file != ""){
-			$scope.upload = $upload.upload({
-				url: '/uploadPhoto',
-				method: 'post',
-				fileFormDataName: 'image',
-				file: file
-			}).success(function (res) {
-				$scope.user.profilePhotoId = res.id;
-				$http.post('/updateUserProfile',{"user":$scope.user}).then(function(res){
-					$scope.getUserProfile();
-					file = "";
-				}, function(error){
-					console.log(error.data);
-				});
-			});
-		} else {
-			$http.post('/updateUserProfile',{"user":$scope.user}).then(function(res){
+		ImageUploadServiceFactory.getService().uploadImage(file,$scope.user.profilePhotoId).then(function(res){
+			$scope.user.profilePhotoId = res.id;
+			UserServiceFactory.getService().updateCurrentUserProfile($scope.user).then(function(res){
 				$scope.getUserProfile();
+				file = "";
 			}, function(error){
 				console.log(error.data);
 			});
-		}
+		}, function(error){
+			console.log(error);
+		});
 	}
 	
 });

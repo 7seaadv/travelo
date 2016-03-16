@@ -41,7 +41,7 @@ public class ServiceController extends Controller {
 		return ok();
 	}
 	
-	public static Result getPlaceDetails(String placeId){
+	public static Result getGooglePlaceDetails(String placeId){
 		try {
 			String url = "https://maps.googleapis.com/maps/api/place/details/json?placeid="+placeId+"&key="+GOOGLE_API_KEY;
 			URL u = new URL(url);
