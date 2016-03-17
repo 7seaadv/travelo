@@ -184,6 +184,7 @@ html, body {
 	padding-top: 0px !important;
 }
 
+/* custom dropdown start */
 .custom-dropdown {
 	position: relative;
 }
@@ -217,6 +218,7 @@ html, body {
 .custom-dropdown .options .option-row:hover {
 	background: lightblue;
 }
+/* custom dropdown end */
 
 @media (min-width: 768px){
 	.navbar-custom {
@@ -240,4 +242,69 @@ html, body {
 	.main .content {
 		margin-top: 57px;
 	}
+}
+
+/* find an expert page */
+.search-banner {
+	font-size: 20px;
+	color: #1D94B7;
+}
+
+.custom-btn {
+	background-color: #1D94B7;
+	border-color: #1D94B7;
+}
+
+.search-btn {
+	width: 100%;
+}
+
+.search-content {
+	margin-top: 20px;
+	min-height: 300px;
+}
+
+.search-results {
+	
+}
+
+.search-results-row {
+	padding: 35px;
+	border-bottom: 1px solid #E6E6E6;
+}
+
+.usr-img-search {
+	width: 50%;
+    margin: 0 auto;	
+}
+
+.search-usr .name {
+	font-size: 20px;
+}
+
+@media (max-width: 1200px){
+	.usr-img-search {
+		width: 75%;
+	}
+}
+
+@media (max-width: 992px){
+	.usr-img-search {
+		width: 100%;
+	}
+}
+
+@media (max-width: 768px){
+	.usr-img-search {
+		width: 25%;
+	}
+	
+	.search-usr {
+		text-align: center;
+		margin-top: 15px;
+	}
+	
+	.search-usr .name {
+	font-size: 15px;
+}
 }

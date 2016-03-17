@@ -39,5 +39,17 @@ app.config(function($stateProvider, $urlRouterProvider, $ocLazyLoadProvider){
         	}
         }
     })
+    .state('findAnExpert', {
+        url: "/find-an-expert",
+        templateUrl: "assets/views/findAnExpert.html",
+        controller: "FindAnExpertController",
+        resolve: {
+            loadPlugin: function ($ocLazyLoad) {
+                return $ocLazyLoad.load([
+					                 
+                ]);
+            }
+        }
+    })
 });
     

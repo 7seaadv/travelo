@@ -51,6 +51,12 @@ app.controller('EditProfileController', function($scope, $timeout, $upload, User
 		});
 	}
 	
+	$scope.closeDropdown = function(){
+		$timeout(function(){
+			$scope.showDropdown = false;
+		}, 500);
+	}
+	
 	$scope.getPlaceDetails = function(p){
 		UtilServiceFactory.getService().getGooglePlaceDetails(p.place_id).then(function(res){
 			$scope.place = {
@@ -63,12 +69,6 @@ app.controller('EditProfileController', function($scope, $timeout, $upload, User
 		}, function(error){
 			console.log(error.data);
 		});
-	}
-	
-	$scope.closeDropdown = function(){
-		$timeout(function(){
-			$scope.showDropdown = false;
-		}, 500);
 	}
 	
 	var file = "";
@@ -105,3 +105,44 @@ app.controller('EditProfileController', function($scope, $timeout, $upload, User
 	}
 	
 });
+
+app.controller('FindAnExpertController', function($scope, $timeout, UserServiceFactory, UtilServiceFactory){
+	
+	$scope.filter = {
+		places: []
+	}
+	
+	$scope.places = [];
+	$scope.showDropdown = true;
+	$scope.getGooglePlaces = function(){
+		UtilServiceFactory.getService().getGooglePlaces($scope.searchText).then(function(res){
+			$scope.places = res.data.predictions;
+		}, function(error){
+			console.log(error.data);
+		});
+	}
+	
+	$scope.closeDropdown = function(){
+		$timeout(function(){
+			$scope.showDropdown = false;
+		}, 500);
+	}
+	
+	$scope.getPlaceDetails = function(p){
+		UtilServiceFactory.getService().getGooglePlaceDetails(p.place_id).then(function(res){
+			$scope.place = {
+					name: res.data.result.name,
+					description: res.data.result.formatted_address,
+					latLng: [res.data.result.geometry.location.lat,res.data.result.geometry.location.lng]
+			}
+			$scope.filter.places.push($scope.place);
+			$scope.searchText = "";
+		}, function(error){
+			console.log(error.data);
+		});
+	}
+	
+	$scope.experts = ["John Smith", "Brad Pitt", "Tony Stark"];
+	
+});	
+	

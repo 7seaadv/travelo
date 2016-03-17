@@ -1,0 +1,47 @@
+<div class="main-content">
+	<div class="row block">
+		<div class="search-banner">
+			<p>Select the places you want to know about and we will find you an expert in those areas!</p>
+		</div>
+		<div class="row">
+			<div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+				<div class="custom-dropdown">
+					<input placeholder="Search..." type="text" class="form-control serach-box" ng-focus="showDropdown = true" ng-blur="closeDropdown()" ng-model="searchText" ng-change="getGooglePlaces()">
+					<div class="options" ng-show="places.length > 0 && showDropdown">
+						<div ng-repeat="p in places" class="option-row" ng-click="getPlaceDetails(p)">
+							<span ng-bind="p.description"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-2 col-md-2 col-sm-4 col-xs-5">
+				<button class="btn btn-primary custom-btn search-btn">Search</button>
+			</div>
+		</div>
+		<div class="row">	
+			<div class="col-lg-12">
+				<div ng-repeat="place in filter.places">
+					<span ng-bind="place.name"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row block search-content">
+		<div class="col-lg-12 col-md-12 col-sm-12 inner-block">
+			<ul class="search-results list-unstyled">
+				<li class="search-results-row row" ng-repeat="e in experts">
+					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+						<div class="usr-img-search">
+							<img src="assets/images/default_user.png" class="img-responsive">
+						</div>
+					</div>
+					<div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 search-usr">
+						<p class="name" ng-bind="e"></p>
+						<button class="btn btn-primary custom-btn">Contact</button>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+	
+</div>
