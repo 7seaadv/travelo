@@ -81,6 +81,15 @@ app.service('UserService', function($http, $q){
                 defer.reject(error);
             });
             return defer.promise;
+        },
+        searchExperts: function (data) {
+            var defer = $q.defer();
+            $http.post('/searchExperts',data).then(function (res) {
+                defer.resolve(res);
+            }, function (error) {
+                defer.reject(error);
+            });
+            return defer.promise;
         }
     };
 });

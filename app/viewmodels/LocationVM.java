@@ -5,6 +5,6 @@ public class LocationVM {
 	public Long id;
 	public String name;
 	public String description;
-	public Double[] latLng = new Double[2];
+	public Double[] lngLat = new Double[2];
 	
 }

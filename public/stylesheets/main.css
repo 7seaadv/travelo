@@ -220,6 +220,24 @@ html, body {
 }
 /* custom dropdown end */
 
+.tags {
+	float: left;
+    padding: 10px;
+    background: #D8E9EF;
+    border-radius: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+.tags .remove {
+	color: #1D94B7;
+    cursor: pointer;
+}
+
+.mg-10 {
+	margin-top: 10px;
+}
+
 @media (min-width: 768px){
 	.navbar-custom {
 	    padding: 20px 0;

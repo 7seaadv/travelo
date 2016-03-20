@@ -6,6 +6,7 @@ import java.util.List;
 
 public class UserVM {
 
+	public Long id;
 	public String firstName;
 	public String lastName;
 	public String gender;

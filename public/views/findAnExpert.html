@@ -15,28 +15,30 @@
 				</div>
 			</div>
 			<div class="col-lg-2 col-md-2 col-sm-4 col-xs-5">
-				<button class="btn btn-primary custom-btn search-btn">Search</button>
+				<button class="btn btn-primary custom-btn search-btn" ng-click="searchExperts()">Search</button>
 			</div>
 		</div>
-		<div class="row">	
+		<div class="row mg-10">	
 			<div class="col-lg-12">
-				<div ng-repeat="place in filter.places">
+				<div ng-repeat="place in filter.places" class="tags">
 					<span ng-bind="place.name"></span>
+					<span class="remove" ng-click="removePlace($index)">x</span>
 				</div>
 			</div>
 		</div>
 	</div>
 	<div class="row block search-content">
 		<div class="col-lg-12 col-md-12 col-sm-12 inner-block">
+			<p ng-if="experts.length == 0">No results found...</p>
 			<ul class="search-results list-unstyled">
 				<li class="search-results-row row" ng-repeat="e in experts">
 					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
 						<div class="usr-img-search">
-							<img src="assets/images/default_user.png" class="img-responsive">
+							<img ng-src="{{e.profilePhoto}}" class="img-responsive">
 						</div>
 					</div>
 					<div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 search-usr">
-						<p class="name" ng-bind="e"></p>
+						<p class="name" ng-bind="e.firstName + ' ' + e.lastName"></p>
 						<button class="btn btn-primary custom-btn">Contact</button>
 					</div>
 				</li>

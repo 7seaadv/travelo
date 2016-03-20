@@ -17,7 +17,7 @@ app.controller('ProfileController', function($scope, UserServiceFactory){
 				$scope.profilePhoto = "assets/images/default_user.png";
 			}
 		}, function(error){
-			console.log(error.data);
+			toastr.error("Error!");
 		});
 	}	
 	
@@ -37,7 +37,7 @@ app.controller('EditProfileController', function($scope, $timeout, $upload, User
 				$scope.profilePhoto = "assets/images/default_user.png";
 			}
 		}, function(error){
-			console.log(error.data);
+			toastr.error("Error!");
 		});
 	}	
 	
@@ -47,7 +47,7 @@ app.controller('EditProfileController', function($scope, $timeout, $upload, User
 		UtilServiceFactory.getService().getGooglePlaces($scope.searchText).then(function(res){
 			$scope.places = res.data.predictions;
 		}, function(error){
-			console.log(error.data);
+			toastr.error("Error!");
 		});
 	}
 	
@@ -60,14 +60,14 @@ app.controller('EditProfileController', function($scope, $timeout, $upload, User
 	$scope.getPlaceDetails = function(p){
 		UtilServiceFactory.getService().getGooglePlaceDetails(p.place_id).then(function(res){
 			$scope.place = {
-					name: res.data.result.name,
-					description: res.data.result.formatted_address,
-					latLng: [res.data.result.geometry.location.lat,res.data.result.geometry.location.lng]
+				name: res.data.result.name,
+				description: res.data.result.formatted_address,
+				lngLat: [res.data.result.geometry.location.lng,res.data.result.geometry.location.lat]
 			}
 			$scope.user.placesBeenTos.push($scope.place);
 			$scope.searchText = "";
 		}, function(error){
-			console.log(error.data);
+			toastr.error("Error!");
 		});
 	}
 	
@@ -96,11 +96,12 @@ app.controller('EditProfileController', function($scope, $timeout, $upload, User
 			UserServiceFactory.getService().updateCurrentUserProfile($scope.user).then(function(res){
 				$scope.getUserProfile();
 				file = "";
+				toastr.success("Success!");
 			}, function(error){
-				console.log(error.data);
+				toastr.error("Error!");
 			});
 		}, function(error){
-			console.log(error);
+			toastr.error("Error!");
 		});
 	}
 	
@@ -118,7 +119,7 @@ app.controller('FindAnExpertController', function($scope, $timeout, UserServiceF
 		UtilServiceFactory.getService().getGooglePlaces($scope.searchText).then(function(res){
 			$scope.places = res.data.predictions;
 		}, function(error){
-			console.log(error.data);
+			toastr.error("Error!");
 		});
 	}
 	
@@ -131,18 +132,35 @@ app.controller('FindAnExpertController', function($scope, $timeout, UserServiceF
 	$scope.getPlaceDetails = function(p){
 		UtilServiceFactory.getService().getGooglePlaceDetails(p.place_id).then(function(res){
 			$scope.place = {
-					name: res.data.result.name,
-					description: res.data.result.formatted_address,
-					latLng: [res.data.result.geometry.location.lat,res.data.result.geometry.location.lng]
+				name: res.data.result.name,
+				lngLat: [res.data.result.geometry.location.lng,res.data.result.geometry.location.lat]
 			}
 			$scope.filter.places.push($scope.place);
 			$scope.searchText = "";
 		}, function(error){
-			console.log(error.data);
+			toastr.error("Error!");
 		});
 	}
 	
-	$scope.experts = ["John Smith", "Brad Pitt", "Tony Stark"];
+	$scope.removePlace = function(index){
+		$scope.filter.places.splice(index,1);
+	}
+	
+	$scope.experts = [];
+	$scope.searchExperts = function(){
+		UserServiceFactory.getService().searchExperts($scope.filter).then(function(res){
+			$scope.experts = res.data;
+			angular.forEach($scope.experts, function(item){
+				if(item.profilePhotoId != null){
+					item.profilePhoto = "/getPhotoById/"+item.profilePhotoId+"/ProfilePhoto";
+				} else {
+					item.profilePhoto = "assets/images/default_user.png";
+				}
+			});
+		}, function(error){
+			toastr.error("Error!");
+		});
+	}
 	
 });	
 	

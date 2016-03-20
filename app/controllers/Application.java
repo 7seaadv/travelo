@@ -5,8 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import models.base.Photo;
 import models.travelo.AuthUser;
@@ -17,6 +20,7 @@ import play.modules.mongodb.jackson.MongoDB;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import service.MyUtils;
 import service.Secured;
 import viewmodels.LocationVM;
 import viewmodels.UserVM;
@@ -96,7 +100,7 @@ public class Application extends Controller {
 			lvm.id = l.id;
 			lvm.name = l.name;
 			lvm.description = l.description;
-			lvm.latLng = l.latLng;
+			lvm.lngLat = l.lngLat;
 			vm.placesBeenTos.add(lvm);
 		}
 		return ok(Json.toJson(vm));
@@ -115,9 +119,15 @@ public class Application extends Controller {
 			JsonNode json = request().body().asJson();
 			user.firstName = json.path("firstName").asText();
 			user.lastName = json.path("lastName").asText();
-			user.gender = json.path("gender").asText();
-			user.aboutMe = json.path("aboutMe").asText();
-			user.dateOfBirth = df.parse(json.path("dateOfBirth").asText());
+			if(MyUtils.validateString(json.path("gender").asText())){
+				user.gender = json.path("gender").asText();
+			}
+			if(MyUtils.validateString(json.path("aboutMe").asText())){
+				user.aboutMe = json.path("aboutMe").asText();
+			}
+			if(MyUtils.validateString(json.path("dateOfBirth").asText())){
+				user.dateOfBirth = df.parse(json.path("dateOfBirth").asText());
+			}
 			ArrayNode places = (ArrayNode) json.path("placesBeenTos");
 			for(int i=0;i<places.size();i++){
 				JsonNode loc = places.get(i);
@@ -125,9 +135,9 @@ public class Application extends Controller {
 					Location l = new Location();
 					l.name = loc.path("name").asText();
 					l.description = loc.path("description").asText();
-					ArrayNode geos = (ArrayNode) loc.path("latLng");
-					l.latLng[0] = geos.get(0).asDouble();
-					l.latLng[1] = geos.get(1).asDouble();
+					ArrayNode geos = (ArrayNode) loc.path("lngLat");
+					l.lngLat[0] = geos.get(0).asDouble();//longitude
+					l.lngLat[1] = geos.get(1).asDouble();//latitude
 					l.save();
 					user.placesBeenToIds.add(l.id);
 				}
@@ -151,6 +161,25 @@ public class Application extends Controller {
 			e.printStackTrace();
 		}
 		return ok();
+	}
+	
+	public static Result searchExperts(){
+		JsonNode json = request().body().asJson();
+		ArrayNode places = (ArrayNode) json.path("places");
+		System.out.println(places);
+		Set<Long> locs = Location.getNearByLocationIds(places);
+		List<User> users = User.getUsersByPlacesBeenTos(locs);
+		List<UserVM> experts = new ArrayList<>();
+		for(User u:users){
+			UserVM vm = new UserVM();
+			vm.id = u.id;
+			vm.firstName = u.firstName;
+			vm.lastName = u.lastName;
+			vm.profilePhotoId = u.profilePhotoId;
+			vm.aboutMe = u.aboutMe;
+			experts.add(vm);
+		}
+		return ok(Json.toJson(experts));
 	}
 
 }

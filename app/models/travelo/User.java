@@ -3,6 +3,7 @@ package models.travelo;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import models.base.MyModel;
 import net.vz.mongodb.jackson.JacksonDBCollection;
@@ -26,5 +27,9 @@ public class User extends MyModel{
 
 	public static User findById(Long linkedUserId) {
 		return coll().findOneById(linkedUserId);
+	}
+
+	public static List<User> getUsersByPlacesBeenTos(Set<Long> locs) {
+		return coll().find().in("placesBeenToIds", locs).toArray();
 	}
 }
