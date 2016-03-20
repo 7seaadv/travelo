@@ -21,10 +21,16 @@ GET		/getGooglePlaceDetails/:id			controllers.ServiceController.getGooglePlaceDe
 POST	/uploadPhoto						controllers.Application.uploadPhoto()
 GET		/getPhotoById/:id/:group			controllers.Application.getPhotoById(id:Long,group:String)
 
+GET		/getUserBasicInfo					controllers.Application.getUserBasicInfo()
 GET		/getCurrentUserProfile				controllers.Application.getCurrentUserProfile()
 POST	/updateCurrentUserProfile			controllers.Application.updateCurrentUserProfile()
 
 POST	/searchExperts						controllers.Application.searchExperts()
+
+POST	/sendRequestMessage					controllers.Application.sendRequestMessage()
+POST	/sendMessage						controllers.Application.sendMessage()
+GET		/getUserConversations				controllers.Application.getUserConversations()
+GET		/getConversationDetails/:id			controllers.Application.getConversationDetails(id:Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               		controllers.Assets.at(path="/public", file)

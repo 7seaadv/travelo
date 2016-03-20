@@ -1,5 +1,11 @@
 
-app.controller('ApplicationController', function(){
+app.controller('ApplicationController', function($scope, UserServiceFactory){
+	
+	UserServiceFactory.getService().getUserBasicInfo().then(function(res){
+		$scope.userBasicInfo = res.data;
+	}, function(error){
+		toastr.error("Error!");
+	});
 	
 });
 
@@ -23,7 +29,7 @@ app.controller('ProfileController', function($scope, UserServiceFactory){
 	
 });	
 	
-app.controller('EditProfileController', function($scope, $timeout, $upload, UserServiceFactory, UtilServiceFactory, ImageUploadServiceFactory){
+app.controller('EditProfileController', function($scope, $timeout, $upload, $state, UserServiceFactory, UtilServiceFactory, ImageUploadServiceFactory){
 	
 	$scope.getUserProfile = function(){
 		UserServiceFactory.getService().getCurrentUserProfile().then(function(res){
@@ -93,10 +99,15 @@ app.controller('EditProfileController', function($scope, $timeout, $upload, User
 	$scope.updateUserProfile = function(){
 		ImageUploadServiceFactory.getService().uploadImage(file,$scope.user.profilePhotoId).then(function(res){
 			$scope.user.profilePhotoId = res.id;
-			UserServiceFactory.getService().updateCurrentUserProfile($scope.user).then(function(res){
+			UserServiceFactory.getService().updateCurrentUserProfile($scope.user).then(function(response){
 				$scope.getUserProfile();
 				file = "";
 				toastr.success("Success!");
+				if(res.id != null){
+					$scope.userBasicInfo.profilePhotoId = res.id;
+				}
+				$scope.userBasicInfo.screenName = $scope.user.firstName + " " + $scope.user.lastName;
+				$state.go("profile");
 			}, function(error){
 				toastr.error("Error!");
 			});
@@ -107,7 +118,7 @@ app.controller('EditProfileController', function($scope, $timeout, $upload, User
 	
 });
 
-app.controller('FindAnExpertController', function($scope, $timeout, UserServiceFactory, UtilServiceFactory){
+app.controller('FindAnExpertController', function($scope, $timeout, $modal, UserServiceFactory, UtilServiceFactory){
 	
 	$scope.filter = {
 		places: []
@@ -162,5 +173,102 @@ app.controller('FindAnExpertController', function($scope, $timeout, UserServiceF
 		});
 	}
 	
+	$scope.openSendRequestMessage = function(user){
+		$scope.message = {
+			toUserId: user.id,
+			toUserName: user.firstName + " " + user.lastName,
+			content: ""
+		}
+		var modalInstance = $modal.open({
+            templateUrl: 'assets/views/sendRequestMessage.html',
+            controller: 'SendRequestMessageModalController',
+            scope: $scope
+        });
+	}
+	
 });	
+
+app.controller('SendRequestMessageModalController', function($scope, $modalInstance, MessageServiceFactory){
+
+	$scope.cancelRequestMessage = function(){
+		$modalInstance.close();
+	}
+	
+	$scope.sendRequestMessage = function(){
+		MessageServiceFactory.getService().sendRequestMessage($scope.message).then(function(res){
+			$modalInstance.close();
+			toastr.success("Success!");
+		}, function(error){
+			toastr.error("Error!");
+		});
+	}
+	
+});
+
+app.controller('MessageController', function($scope, $state, MessageServiceFactory){
+	
+	$scope.conversations = [];
+	$scope.getUserConversations = function(){
+		MessageServiceFactory.getService().getUserConversations().then(function(res){
+			$scope.conversations = res.data;
+			angular.forEach($scope.conversations, function(item){
+				if(item.endUserPhotoId != null){
+					item.endUserPhoto = "/getPhotoById/"+item.endUserPhotoId+"/ProfilePhoto";
+				} else {
+					item.endUserPhoto = "assets/images/default_user.png";
+				}
+			});
+		}, function(error){
+			toastr.error("Error!");
+		});
+	}
+	
+	$scope.viewConversationDetails = function(c){
+		$state.go("messageDetails",({"cid":c.id}));
+	}
+	
+});
+
+app.controller('MessageDetailsController', function($scope, $stateParams, MessageServiceFactory){
+	
+	$scope.getConversationDetails = function(){
+		MessageServiceFactory.getService().getConversationDetails($stateParams.cid).then(function(res){
+			$scope.conversation = res.data.Conversation;
+			$scope.messages = res.data.Messages;
+			angular.forEach($scope.messages, function(item){
+				item.createTime = moment(item.createTime).format("YYYY-MM-DD HH:mm:ss");
+				var photoId;
+				if(item.senderType == $scope.conversation.selfType){
+					photoId = $scope.userBasicInfo.profilePhotoId;
+				} else {
+					photoId = $scope.conversation.endUserPhotoId;
+				}
+				if(photoId != null){
+					item.userPhoto = "/getPhotoById/"+photoId+"/ProfilePhoto";
+				} else {
+					item.userPhoto = "assets/images/default_user.png";
+				}
+			});
+		}, function(error){
+			toastr.error("Error!");
+		});
+	}
+	
+	$scope.getConversationDetails();
+	
+	$scope.sendMessage = function(){
+		$scope.message = {
+			conversationId: $scope.conversation.id,
+			content: $scope.messageText
+		}
+		MessageServiceFactory.getService().sendMessage($scope.message).then(function(res){
+			toastr.success("Success!");
+			$scope.messageText = "";
+			$scope.getConversationDetails();
+		}, function(error){
+			toastr.error("Error!");
+		});
+	}
+	
+});
 	

@@ -51,5 +51,29 @@ app.config(function($stateProvider, $urlRouterProvider, $ocLazyLoadProvider){
             }
         }
     })
+    .state('messages', {
+        url: "/messages",
+        templateUrl: "assets/views/messages.html",
+        controller: "MessageController",
+        resolve: {
+            loadPlugin: function ($ocLazyLoad) {
+                return $ocLazyLoad.load([
+					                 
+                ]);
+            }
+        }
+    })
+    .state('messageDetails', {
+        url: "/messages/:cid",
+        templateUrl: "assets/views/messageDetails.html",
+        controller: "MessageDetailsController",
+        resolve: {
+            loadPlugin: function ($ocLazyLoad) {
+                return $ocLazyLoad.load([
+					                 
+                ]);
+            }
+        }
+    })
 });
     

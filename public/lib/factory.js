@@ -22,3 +22,11 @@ app.factory('UserServiceFactory', function(UserService) {
         }
     };
 });
+
+app.factory('MessageServiceFactory', function(MessageService) {
+    return {
+        getService: function() {
+        	return MessageService;
+        }
+    };
+});

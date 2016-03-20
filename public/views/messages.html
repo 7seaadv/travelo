@@ -1,0 +1,19 @@
+<div class="main-content" ng-init="getUserConversations()">
+	<div class="row block search-content">
+		<div class="col-lg-12 col-md-12 col-sm-12 inner-block">
+			<ul class="search-results list-unstyled">
+				<li class="search-results-row row" ng-repeat="c in conversations">
+					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+						<div class="usr-img-search">
+							<img ng-src="{{c.endUserPhoto}}" class="img-responsive">
+						</div>
+					</div>
+					<div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 search-usr">
+						<p class="name" ng-bind="c.endUserName"></p>
+						<button class="btn btn-primary custom-btn" ng-click="viewConversationDetails(c)">View Details</button>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>

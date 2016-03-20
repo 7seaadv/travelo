@@ -64,6 +64,15 @@ app.service('UtilService', function($http, $q){
 
 app.service('UserService', function($http, $q){
     return {
+    	getUserBasicInfo: function () {
+            var defer = $q.defer();
+            $http.get('/getUserBasicInfo').then(function (res) {
+                defer.resolve(res);
+            }, function (error) {
+                defer.reject(error);
+            });
+            return defer.promise;
+        },
     	getCurrentUserProfile: function () {
             var defer = $q.defer();
             $http.get('/getCurrentUserProfile').then(function (res) {
@@ -85,6 +94,47 @@ app.service('UserService', function($http, $q){
         searchExperts: function (data) {
             var defer = $q.defer();
             $http.post('/searchExperts',data).then(function (res) {
+                defer.resolve(res);
+            }, function (error) {
+                defer.reject(error);
+            });
+            return defer.promise;
+        }
+    };
+});
+
+app.service('MessageService', function($http, $q){
+    return {
+    	sendRequestMessage: function (data) {
+            var defer = $q.defer();
+            $http.post('/sendRequestMessage', data).then(function (res) {
+                defer.resolve(res);
+            }, function (error) {
+                defer.reject(error);
+            });
+            return defer.promise;
+        },
+        getUserConversations: function () {
+            var defer = $q.defer();
+            $http.get('/getUserConversations').then(function (res) {
+                defer.resolve(res);
+            }, function (error) {
+                defer.reject(error);
+            });
+            return defer.promise;
+        },
+        getConversationDetails: function (id) {
+            var defer = $q.defer();
+            $http.get('/getConversationDetails/'+id).then(function (res) {
+                defer.resolve(res);
+            }, function (error) {
+                defer.reject(error);
+            });
+            return defer.promise;
+        },
+        sendMessage: function (data) {
+            var defer = $q.defer();
+            $http.post('/sendMessage', data).then(function (res) {
                 defer.resolve(res);
             }, function (error) {
                 defer.reject(error);

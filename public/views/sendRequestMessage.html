@@ -1,0 +1,16 @@
+<div class="inmodal" >
+    <div class="modal-header">
+		To: <span ng-bind="message.toUserName"></span>
+    </div>
+    <div class="modal-body">
+		<form>
+			<div class="form-group">
+				<textarea style="resize:none;" rows="5" class="form-control" ng-model="message.content"></textarea>
+			</div>
+		</form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-white" ng-click="cancelRequestMessage()">Cancel</button>
+        <button type="button" class="btn btn-primary custom-btn" ng-click="sendRequestMessage()">Send</button>
+    </div>
+</div>
